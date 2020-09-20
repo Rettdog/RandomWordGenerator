@@ -1,27 +1,18 @@
 package randomName;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-public class GetValidLetters implements ActionListener {
+public class GetValidLetters implements ActionListener, MouseListener {
 	static ArrayList<ArrayList<String>> allowed2 = new ArrayList<ArrayList<String>>();
 	static ArrayList<ArrayList<ArrayList<String>>> allowed3 = new ArrayList<ArrayList<ArrayList<String>>>();
 	static ArrayList<String> letters = new ArrayList<String>();
@@ -30,13 +21,13 @@ public class GetValidLetters implements ActionListener {
 	JFrame frame = new JFrame();
 	JPanel panel = new JPanel();
 	JLabel alph = new JLabel("Alphabet:");
-	JTextField alphabet = new JTextField("alphabet.txt");
+	static JTextField alphabet;
 	JLabel list = new JLabel("Word List:");
-	JTextField words = new JTextField("english.txt");
+	static JTextField words;
 	JLabel length = new JLabel("Word Length:");
-	JTextField wordlength = new JTextField("7");
+	static JTextField wordlength;
 	JLabel wordCount = new JLabel("Number of words:");
-	JTextField wc = new JTextField("10");
+	static JTextField wc;
 	JButton goButton = new JButton("Generate");
 	
 	JLabel title = new JLabel("Random Word Generator:                        ");
@@ -44,7 +35,14 @@ public class GetValidLetters implements ActionListener {
 	static GetValidLetters wordMaker;
 	JPanel wordPanel = new JPanel();
 	ArrayList<JLabel> generatedArray = new ArrayList<JLabel>();
+	
+	static String[] defaults = {"alphabet.txt","uscities.txt","8","15"};
 	public static void main(String[] args) {
+		
+		alphabet = new JTextField(defaults[0]);
+		words = new JTextField(defaults[1]);
+		wordlength = new JTextField(defaults[2]);
+		wc = new JTextField(defaults[3]);
 		
 		wordMaker = new GetValidLetters();
 		wordMaker.generate();
@@ -53,6 +51,8 @@ public class GetValidLetters implements ActionListener {
 	}
 	
 	public void makeFrame() {
+		
+		
 		alphabet.setPreferredSize(new Dimension(172,20));
 		words.setPreferredSize(new Dimension(167,20));
 		wordlength.setPreferredSize(new Dimension(148,20));
@@ -97,7 +97,7 @@ public class GetValidLetters implements ActionListener {
 			alpha.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			wordPanel.add(new JLabel("ERROR: File not found"));
 		}
 		int numberOfChars = letters.size();
 		for(int i = 0;i<numberOfChars;i++) {
@@ -137,7 +137,7 @@ public class GetValidLetters implements ActionListener {
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			wordPanel.add(new JLabel("ERROR: File not found"));
 		}
 	}
 	
@@ -159,50 +159,85 @@ public class GetValidLetters implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		wordMaker.generate();
-		// TODO Auto-generated method stub
-		try {
-			wordMaker.generated.setText("");
-			int amount = Integer.parseInt(wc.getText());
-			String out;
-//			for(int i = generatedArray.size()-1;i>=0;i--) {
-//				wordPanel.remove(i);
-//			}
-//			wordPanel.removeAll();
-			generatedArray = new ArrayList<JLabel>();
-			frame.remove(wordPanel);
-			wordPanel = new JPanel();
-			wordPanel.setLayout(new FlowLayout());
-			wordPanel.setMaximumSize(new Dimension(200,500));
-			wordPanel.setPreferredSize(new Dimension(200,300));
-			frame.getContentPane().add(wordPanel,"South");
-			for(int k = 0;k<amount;k++) {
-				out = begins.get(randy.nextInt(begins.size()));
-				int lengthOfWord = Integer.parseInt(wordlength.getText());
-//				lengthOfWord = 7;
-				for(int l = 0;l<lengthOfWord-3;l++) {
-					if(get2Next(out.substring(out.length()-2))==null) {
-						break;
+		if(e.getSource() == goButton) {
+			wordMaker.generate();
+			// TODO Auto-generated method stub
+			try {
+				wordMaker.generated.setText("");
+				int amount = Integer.parseInt(wc.getText());
+				String out;
+	//			for(int i = generatedArray.size()-1;i>=0;i--) {
+	//				wordPanel.remove(i);
+	//			}
+	//			wordPanel.removeAll();
+				generatedArray = new ArrayList<JLabel>();
+				frame.remove(wordPanel);
+				wordPanel = new JPanel();
+				wordPanel.setLayout(new FlowLayout());
+				wordPanel.setMaximumSize(new Dimension(200,500));
+				wordPanel.setPreferredSize(new Dimension(200,300));
+				frame.getContentPane().add(wordPanel,"South");
+				for(int k = 0;k<amount;k++) {
+					out = begins.get(randy.nextInt(begins.size()));
+					int lengthOfWord = Integer.parseInt(wordlength.getText());
+	//				lengthOfWord = 7;
+					for(int l = 0;l<lengthOfWord-3;l++) {
+						if(get2Next(out.substring(out.length()-2))==null) {
+							break;
+						}
+						out += get2Next(out.substring(out.length()-2));
 					}
-					out += get2Next(out.substring(out.length()-2));
+					//System.out.println(out);
+					JLabel temp = new JLabel(out+" ");
+					temp.setFont(new Font("Serif", Font.PLAIN, 20));
+					temp.addMouseListener(this);
+					generatedArray.add(temp);
 				}
-				System.out.println(out);
-				JLabel temp = new JLabel(out+" ");
-				temp.setFont(new Font("Serif", Font.PLAIN, 20));
-				generatedArray.add(temp);
+				for(int i = 0;i<generatedArray.size();i++) {
+					wordPanel.add(generatedArray.get(i));
+				}
+				wordMaker.frame.pack();
+			}catch(NumberFormatException e1) {
+				wordPanel.add(new JLabel("ERROR: Please use numbers"));
 			}
-			for(int i = 0;i<generatedArray.size();i++) {
-				wordPanel.add(generatedArray.get(i));
-			}
-			wordMaker.frame.pack();
-		}catch(NumberFormatException e1) {
-			wordPanel.add(new JLabel("ERROR: Please use numbers"));
+			wordMaker.formatFrame();
+		}else {
+			System.out.println(((JLabel) e.getSource()).getText());
 		}
-		wordMaker.formatFrame();
 	}
 	
 	public void formatFrame() {
 		frame.pack();
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println(((JLabel) e.getSource()).getText());
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 }

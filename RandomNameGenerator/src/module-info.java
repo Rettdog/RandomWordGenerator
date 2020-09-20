@@ -1,3 +1,3 @@
-module randomNameGenerator {
+module RandomWordGenerator {
 	requires java.desktop;
 }
