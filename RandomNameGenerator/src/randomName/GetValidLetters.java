@@ -36,7 +36,7 @@ public class GetValidLetters implements ActionListener, MouseListener {
 	JPanel wordPanel = new JPanel();
 	ArrayList<JLabel> generatedArray = new ArrayList<JLabel>();
 	
-	static String[] defaults = {"alphabet.txt","uscities.txt","8","15"};
+	static String[] defaults = {"basic-alphabet.txt","english.txt","8","15"};
 	public static void main(String[] args) {
 		
 		alphabet = new JTextField(defaults[0]);
