@@ -71,13 +71,13 @@ public class GetValidLetters implements ActionListener, MouseListener {
 		panel.add(goButton);
 		panel.add(generated);
 		wordPanel.setLayout(new FlowLayout());
-		wordPanel.setMaximumSize(new Dimension(200,500));
-		wordPanel.setPreferredSize(new Dimension(200,300));
+		wordPanel.setMaximumSize(new Dimension(300,500));
+		wordPanel.setPreferredSize(new Dimension(300,300));
 		frame.getContentPane().add(panel,"Center");
 		frame.getContentPane().add(wordPanel,"South");
-		frame.setMinimumSize(new Dimension(200,200));
-		frame.setMaximumSize(new Dimension(200,500));
-		frame.setPreferredSize(new Dimension(200,500));
+		frame.setMinimumSize(new Dimension(300,200));
+		frame.setMaximumSize(new Dimension(300,500));
+		frame.setPreferredSize(new Dimension(300,500));
 		frame.pack();
 		frame.setVisible(true);
 	}
